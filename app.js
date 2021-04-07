@@ -1,17 +1,22 @@
 const Koa = require('koa');
+const bodyParser = require('koa-bodyparser');
 const app = new Koa();
+// const router = require('koa-router')
 
-// 对于任何请求，app将调用该异步函数处理请求：
-app.use(async (ctx, next) => {
-    await next();
-    // todo
-});
+app.use(bodyParser());  // 解析request的body
 
-app.use(async (ctx, next) => {
-    await next();
-    // todo
-    ctx.body = 'hello world'
-});
+// 给路由加个前缀
+const Router = require('koa-router')
+const router = new Router({
+	prefix: '/api'
+})
+
+router.get('/', async (ctx, next) => {
+	// todo
+  ctx.body = 'hello world111'
+})
+
+app.use(router.routes());
 
 // 在端口8081监听:
 app.listen(5000, () => {
