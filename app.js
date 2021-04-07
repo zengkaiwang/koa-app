@@ -11,6 +11,40 @@ const router = new Router({
 	prefix: '/api'
 })
 
+const mongoose = require('mongoose')
+const db = mongoose.connect("mongodb://localhost/testDB")
+
+// 账户的数据库模型
+var UserSchema = new mongoose.Schema({
+    username:String,
+    password:String,
+    email:String
+});
+var User = mongoose.model('User',UserSchema);
+
+// 新增数据
+var user = {
+  username: 'ydj',
+  password: '123123',
+  email: ''
+}
+var newUser = new User(user);
+newUser.save();
+
+router.get('/', async (ctx, next) => {
+	let val = null
+	const data = await User.findOne({username: 'ydj'})
+	console.log('data', data)
+	const result = {
+		code:200,
+		response: data,
+		ts: 12345
+	}
+	ctx.response.body = result
+	return result
+})
+
+
 router.get('/', async (ctx, next) => {
 	// todo
   ctx.body = 'hello world111'
