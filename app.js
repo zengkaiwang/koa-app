@@ -1,35 +1,18 @@
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const cors = require('koa2-cors')
+import corsConfigs from './configs/cors'
+
 const app = new Koa();
 // const router = require('koa-router')
 
 // 处理跨域的配置
-app.use(cors({
-  exposeHeaders: ['WWW-Authenticate', 'Server-Authorization', 'Date'],
-  maxAge: 100,
-  credentials: true,
-  allowMethods: ['GET', 'POST', 'OPTIONS'],
-  allowHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Custom-Header', 'anonymous'],
-}));
+app.use(cors(corsConfigs));
 
-// logger
-app.use(async (ctx, next) => {
-  console.log('--0-0--')
-  await next();
-  const rt = ctx.response.get('X-Response-Time')
-  console.log(`--0-1-- ${ctx.method} ${ctx.url} - ${rt}`)
-})
+// logger 中间件
+const loggerAsync = require('./middleware/logger-async')
+app.use(loggerAsync())
 
-// x-response-time
-app.use(async (ctx, next) => {
-  console.log('--1-0--')
-  const start = new Date()
-  await next()
-  const ms = Date.now() - start;
-  console.log('--1-1--')
-  ctx.set('X-Response-Time', `${ms}ms`);
-})
 
 app.use(bodyParser());  // 解析request的body
 
