@@ -1,10 +1,15 @@
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const cors = require('koa2-cors')
+
 import corsConfigs from './configs/cors'
+import router from './router'
 
 const app = new Koa();
-// const router = require('koa-router')
+
+// 连接数据库
+const mongoose = require('mongoose')
+mongoose.connect("mongodb://127.0.0.1/testDB")
 
 // 处理跨域的配置
 app.use(cors(corsConfigs));
@@ -13,55 +18,11 @@ app.use(cors(corsConfigs));
 const loggerAsync = require('./middleware/logger-async')
 app.use(loggerAsync())
 
+// 解析request的body
+app.use(bodyParser());  
 
-app.use(bodyParser());  // 解析request的body
-
-// 给路由加个前缀
-const Router = require('koa-router')
-const router = new Router({
-	prefix: '/api'
-})
-
-const mongoose = require('mongoose')
-const db = mongoose.connect("mongodb://localhost/testDB")
-
-// 账户的数据库模型
-var UserSchema = new mongoose.Schema({
-    username:String,
-    password:String,
-    email:String
-});
-var User = mongoose.model('User',UserSchema);
-
-// 新增数据
-var user = {
-  username: 'ydj',
-  password: '123123',
-  email: ''
-}
-var newUser = new User(user);
-newUser.save();
-
-router.get('/', async (ctx, next) => {
-	let val = null
-	const data = await User.findOne({username: 'ydj'})
-	console.log('data', data)
-	const result = {
-		code:200,
-		response: data,
-		ts: 12345
-	}
-	ctx.response.body = result
-	return result
-})
-
-
-router.get('/', async (ctx, next) => {
-	// todo
-  ctx.body = 'hello world111'
-})
-
-app.use(router.routes());
+// 载入路由
+app.use(router.routes(), router.allowedMethods())
 
 // 在端口8081监听:
 app.listen(5000, () => {
