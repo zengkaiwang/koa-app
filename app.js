@@ -13,6 +13,24 @@ app.use(cors({
   allowHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Custom-Header', 'anonymous'],
 }));
 
+// logger
+app.use(async (ctx, next) => {
+  console.log('--0-0--')
+  await next();
+  const rt = ctx.response.get('X-Response-Time')
+  console.log(`--0-1-- ${ctx.method} ${ctx.url} - ${rt}`)
+})
+
+// x-response-time
+app.use(async (ctx, next) => {
+  console.log('--1-0--')
+  const start = new Date()
+  await next()
+  const ms = Date.now() - start;
+  console.log('--1-1--')
+  ctx.set('X-Response-Time', `${ms}ms`);
+})
+
 app.use(bodyParser());  // 解析request的body
 
 // 给路由加个前缀
