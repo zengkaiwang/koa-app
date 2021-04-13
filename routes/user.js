@@ -1,7 +1,8 @@
 
 import Router from 'koa-router'
-const User = require('../models/user')
 const router = new Router
+
+const User = require('../models/user')
 
 router.prefix('/api')
 

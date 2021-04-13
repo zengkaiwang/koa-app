@@ -3,7 +3,9 @@ const bodyParser = require('koa-bodyparser');
 const cors = require('koa2-cors')
 
 import corsConfigs from './configs/cors'
-import router from './routes/user'
+
+import users from './routes/user'
+import demo from './routes/demo'
 
 const app = new Koa();
 
@@ -22,7 +24,8 @@ app.use(loggerAsync())
 app.use(bodyParser());  
 
 // 载入路由
-app.use(router.routes(), router.allowedMethods())
+app.use(users.routes(), users.allowedMethods())
+app.use(demo.routes(), demo.allowedMethods())
 
 // 在端口8081监听:
 app.listen(5000, () => {
