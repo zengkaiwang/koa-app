@@ -1,6 +1,6 @@
 
 import Router from 'koa-router'
-const User = require('./models/user')
+const User = require('../models/user')
 const router = new Router
 
 router.prefix('/api')
@@ -29,12 +29,6 @@ router.post('/add', async (ctx, next) => {
   newUser.save();
   ctx.response.body = newUser
 })
-
-router
-    .get('/goods/find', async ctx => {/* ... */})
-    .post('/goods/add', async ctx => {/* ... */})
-    .post('/goods/update', async ctx  => {/* ... */})
-    .post('/goods/remove', async ctx => {/* ... */})
 
 export default router
 

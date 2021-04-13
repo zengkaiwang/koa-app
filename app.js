@@ -3,7 +3,7 @@ const bodyParser = require('koa-bodyparser');
 const cors = require('koa2-cors')
 
 import corsConfigs from './configs/cors'
-import router from './router'
+import router from './routes/user'
 
 const app = new Koa();
 
@@ -15,7 +15,7 @@ mongoose.connect("mongodb://127.0.0.1/testDB")
 app.use(cors(corsConfigs));
 
 // logger 中间件
-const loggerAsync = require('./middleware/logger-async')
+const loggerAsync = require('./middlewares/logger-async')
 app.use(loggerAsync())
 
 // 解析request的body
